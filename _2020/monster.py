@@ -775,7 +775,7 @@ class ZooOfGroups(ThreeDScene):
         sphere[1].set_stroke(WHITE, 0.5, 0.5)
         sphere.rotate(90 * DEGREES, LEFT)
         sphere.rotate(0.2 * DEGREES, RIGHT)
-        sphere[0].sort_faces_back_to_front()
+        sphere[0].set_sort_to_camera()
         sphere.rotate(90 * DEGREES, UP)
         sphere.set_height(3)
 
@@ -4303,7 +4303,7 @@ class MonstrousMoonshine(Scene):
         decades = list(range(1970, 2030, 10))
         timeline = NumberLine(
             (decades[0], decades[-1], 1),
-            numbers_with_elongated_ticks=decades,
+            big_tick_numbers=decades,
             tick_size=0.075,
             width=13,
         )

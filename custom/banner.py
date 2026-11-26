@@ -21,7 +21,7 @@ class Banner(Scene):
     pi_height = 1.25
     pi_bottom = 0.25 * DOWN
     use_date = False
-    message = None
+    message = "Animated Math"
     date = "Sunday, February 3rd"
     message_height = 0.4
     add_supporter_note = False
@@ -34,15 +34,12 @@ class Banner(Scene):
             (-7, 7), (-5, 5),
             height=10 * 1.5,
             width=14 * 1.5,
-            axis_config={"stroke_color": BLUE_A},
             faded_line_ratio=4,
         )
-        for line in plane.family_members_with_points():
-            line.set_stroke(width=line.get_stroke_width() / 2)
-        self.add(
-            plane,
-            # FullScreenFadeRectangle().set_fill(BLACK, 0.25),
-        )
+        plane.axes.set_stroke(WHITE, 1, 1)
+        plane.background_lines.set_stroke(BLUE_D, 1, 0.5)
+        plane.faded_lines.set_stroke(BLUE, 1, 0.1)
+        self.add(plane)
 
         # Pis
         pis = self.get_pis()
@@ -58,10 +55,10 @@ class Banner(Scene):
         message = self.get_message()
         message.set_height(self.message_height)
         message.next_to(pis, DOWN)
-        message.set_stroke(BLACK, 10, background=True)
+        message.set_stroke(BLACK, 5, behind=True)
         self.add(message)
 
-        # Suppoerter note
+        # Supporter note
         if self.add_supporter_note:
             note = self.get_supporter_note()
             note.scale(0.5)
@@ -85,19 +82,9 @@ class Banner(Scene):
         )
 
     def get_message(self):
-        if self.message:
-            return Text(self.message)
         if self.use_date:
             return self.get_date_message()
-        else:
-            return self.get_probabalistic_message()
-
-    def get_probabalistic_message(self):
-        return Text(
-            "New video every day " + \
-            "(with probability 0.05)",
-            t2c={"Sunday": YELLOW},
-        )
+        return Text(self.message)
 
     def get_date_message(self):
         return Text(

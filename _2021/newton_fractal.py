@@ -1,9 +1,9 @@
 from manim_imports_ext import *
 
-from _2022.quintic import coefficients_to_roots
-from _2022.quintic import roots_to_coefficients
-from _2022.quintic import dpoly
-from _2022.quintic import poly
+from _2022.quintic.roots_and_coefs import coefficients_to_roots
+from _2022.quintic.roots_and_coefs import roots_to_coefficients
+from _2022.quintic.roots_and_coefs import dpoly
+from _2022.quintic.roots_and_coefs import poly
 
 
 ROOT_COLORS_BRIGHT = [RED, GREEN, BLUE, YELLOW, MAROON_B]
@@ -72,7 +72,7 @@ def get_figure(image_name, person_name, year_text, height=3, label_direction=DOW
 class NewtonFractal(Mobject):
     CONFIG = {
         "shader_folder": "newton_fractal",
-        "shader_dtype": [
+        "data_dtype": [
             ('point', np.float32, (3,)),
         ],
         "colors": ROOT_COLORS_DEEP,
@@ -328,7 +328,6 @@ class AskAboutComplexity(Scene):
 
 class WhoCares(TeacherStudentsScene):
     def construct(self):
-        self.students.refresh_triangulation()
         screen = self.screen
         screen.set_height(4, about_edge=UL)
         screen.set_fill(BLACK, 1)
@@ -395,7 +394,7 @@ class SphereExample(Scene):
         sphere.move_to(axes.c2p(0, 0, 0))
         sphere.set_gloss(1.0)
         sphere.set_opacity(0.5)
-        sphere.sort_faces_back_to_front(DOWN)
+        sphere.set_sort_to_camera()
         mesh = SurfaceMesh(sphere, resolution=(21, 11))
         mesh.set_stroke(BLUE, 0.5, 0.5)
         sphere = Group(sphere, mesh)
@@ -502,7 +501,6 @@ class CurvesDefiningFonts(Scene):
 
         chars = OldTexText("When a computer\\\\renders text...")[0]
         chars.set_width(FRAME_WIDTH - 3)
-        chars.refresh_triangulation()
         filled_chars = chars.copy()
         filled_chars.insert_n_curves(50)
         chars.set_stroke(WHITE, 0.5)
@@ -708,7 +706,6 @@ class RasterizingBezier(Scene):
         pixel = pixels[725].deepcopy()
         pixel.set_fill(opacity=0)
         label = OldTexText("Pixel $\\vec{\\textbf{p}}$")
-        label.refresh_triangulation()
         label.set_fill(YELLOW)
         label.set_stroke(BLACK, 4, background=True)
         label.next_to(pixel, UL, buff=LARGE_BUFF)
@@ -734,7 +731,6 @@ class RasterizingBezier(Scene):
         t_tracker = ValueTracker(0)
         get_t = t_tracker.get_value
         P_dot = Dot(color=GREEN)
-        globals().update(locals())
         ct[1].add_updater(lambda m: m.set_value(get_t()))
         ct[1].next_to(ct[0], RIGHT, buff=0)
         P_dot.add_updater(lambda m: m.move_to(curve.pfp(get_t() / 2)))
@@ -899,7 +895,6 @@ class RasterizingBezier(Scene):
         axes.shift((top_axes.c2p(0, 0) - axes.c2p(0, 0))[0] * RIGHT)
         dt = 1e-5
         f = top_graph.underlying_function
-        globals().update(locals())
         graph = axes.get_graph(lambda t: (f(t + dt) - f(t)) / dt)
         graph.set_stroke(MAROON_B)
         # Dumb hack, not sure why it's needed
@@ -1450,7 +1445,7 @@ class RealNewtonsMethod(Scene):
             "longer_tick_multiple": 2.0,
             "tick_offset": 0,
             # Change name
-            "numbers_with_elongated_ticks": list(range(-2, 3)),
+            "big_tick_numbers": list(range(-2, 3)),
             "include_tip": False,
         }
     }
@@ -1940,7 +1935,7 @@ class FasterNewtonExample(RealNewtonsMethod):
             "longer_tick_multiple": 2.0,
             "tick_offset": 0,
             # Change name
-            "numbers_with_elongated_ticks": list(range(-2, 3)),
+            "big_tick_numbers": list(range(-2, 3)),
             "include_tip": False,
         }
     }
@@ -1962,7 +1957,6 @@ class FasterNewtonExample(RealNewtonsMethod):
 
 class AssumingItsGood(TeacherStudentsScene):
     def construct(self):
-        self.pi_creatures.refresh_triangulation()
         self.teacher_says(
             OldTexText("Assuming this\\\\approximation\\\\is decent...", font_size=42),
             bubble_config={
@@ -1973,7 +1967,6 @@ class AssumingItsGood(TeacherStudentsScene):
             "pondering", "pondering", "tease",
             look_at=self.screen
         )
-        self.pi_creatures.refresh_triangulation()
         self.wait(3)
 
 
@@ -2172,7 +2165,7 @@ class HistoryWithNewton(Scene):
             (*time_range, 1),
             tick_size=0.025,
             longer_tick_multiple=4,
-            numbers_with_elongated_ticks=range(*time_range, 10),
+            big_tick_numbers=range(*time_range, 10),
         )
         timeline.stretch(0.2 / timeline.get_unit_size(), 0)
         timeline_center = 2 * DOWN

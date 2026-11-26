@@ -35,7 +35,7 @@ def get_full_surface(band_func, x_range):
     )
     surface.set_color(BLUE_D)
     surface.set_shadow(0.5)
-    surface.add_updater(lambda m: m.sort_faces_back_to_front(DOWN))
+    surface.set_sort_to_camera()
     # surface = TexturedSurface(surface, "EarthTextureMap", "NightEarthTextureMap")
     # surface = TexturedSurface(surface, "WaterColor")
     # inv_surface = ParametricSurface(
@@ -53,7 +53,6 @@ def get_full_surface(band_func, x_range):
     bound.apply_depth_test()
     meshes.set_stroke(WHITE, 0.5, 0.5)
     return Group(surface, m1, m2, bound)
-    return Group(surface, bound)
 
 
 def get_sudanese_band(circle_on_xy_plane=False):

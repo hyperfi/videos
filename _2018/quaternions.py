@@ -3634,12 +3634,12 @@ class TwoDStereographicProjection(IntroduceFelix):
         n = len(south_hemisphere)
         south_hemisphere.remove(*south_hemisphere[:n // 2])
         south_hemisphere.remove(
-            *south_hemisphere[-sphere.resolution[1]:]
+            *south_hemisphere[-sphere.get_resolution()[1]:]
         )
         south_hemisphere.generate_target()
         self.project_mobject(south_hemisphere.target)
         south_hemisphere.set_fill(opacity=0.8)
-        south_hemisphere.target[-sphere.resolution[1] // 2:].set_fill(
+        south_hemisphere.target[-sphere.get_resolution()[1] // 2:].set_fill(
             opacity=0
         )
 
@@ -5320,7 +5320,7 @@ class RuleOfQuaternionMultiplication(HypersphereStereographicProjection):
         self.play(*map(ShowCreation, arrows))
         self.wait()
         self.set_quat([0, 0, 1, 0], run_time=1)
-        q_tracker.add_updater(set_q_to_mj, index=0)
+        q_tracker.insert_updater(set_q_to_mj, index=0)
         self.add(self.circle_1i)
         self.play(
             m_tracker.set_value, [0, 1, 0, 0],

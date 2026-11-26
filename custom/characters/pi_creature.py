@@ -77,7 +77,8 @@ class PiCreature(SVGMobject):
             self.flip()
         if start_corner is not None:
             self.to_corner(start_corner)
-        self.refresh_triangulation()
+        # This smooths out interpolation between modes
+        self.body.insert_n_curves(100)
 
     def get_svg_file_path(self, mode):
         folder = get_directories()["pi_creature_images"]
@@ -206,15 +207,8 @@ class PiCreature(SVGMobject):
         return self
 
     def get_bubble(self, content, bubble_type=ThoughtBubble, **bubble_config):
-        bubble = bubble_type(**bubble_config)
-        if len(content) > 0:
-            if isinstance(content[0], str):
-                content_mob = Text(content)
-            else:
-                content_mob = content
-            bubble.add_content(content_mob)
-            bubble.resize_to_content()
-        bubble.pin_to(self, auto_flip=["direction" not in bubble_config])
+        bubble = bubble_type(content, **bubble_config)
+        bubble.pin_to(self, auto_flip=("direction" not in bubble_config))
         self.bubble = bubble
         return bubble
 
@@ -242,8 +236,8 @@ class PiCreature(SVGMobject):
 
     # Overrides
 
-    def become(self, mobject):
-        super().become(mobject)
+    def become(self, mobject, **kwargs):
+        super().become(mobject, **kwargs)
         if isinstance(mobject, PiCreature):
             self.bubble = mobject.bubble
         return self
@@ -284,7 +278,6 @@ class PiCreature(SVGMobject):
         self.bubble = new_bubble
         return AnimationGroup(
             ReplacementTransform(old_bubble, new_bubble),
-            FadeTransform(old_bubble.content, new_bubble.content),
             self.change(mode, look_at)
         )
 
@@ -323,7 +316,6 @@ class Mathematician(PiCreature):
         super().__init__(mode, color, **kwargs)
 
 
-
 class BabyPiCreature(PiCreature):
     def __init__(
         self,
@@ -346,8 +338,22 @@ class BabyPiCreature(PiCreature):
 
 
 class TauCreature(PiCreature):
-    # TODO, this currently does nothing
-    file_name_prefix: str = "TauCreatures"
+    def init_structure(self):
+        pass
+
+    def get_svg_file_path(self, mode):
+        folder = get_directories()["vector_images"]
+        path = os.path.join(folder, f"TauCreatures_{mode}.svg")
+        if os.path.exists(path):
+            return path
+        else:
+            logging.log(
+                logging.WARNING,
+                f"No design with mode {mode}\n"
+                f"Searched at path {path}"
+            )
+            folder = get_directories()["pi_creature_images"]
+            return os.path.join(folder, "plain.svg")
 
 
 class ThreeLeggedPiCreature(PiCreature):

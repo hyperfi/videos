@@ -74,7 +74,7 @@ class TransitionToContinuousProbability(InteractiveScene):
                 x_range=(0, min(6 + n, 12)),
                 dx=(1 / n),
                 input_sample_type="right",
-            ).set_stroke(WHITE, width=(2.0 / n), opacity=(2.0 / n), background=False)
+            ).set_stroke(WHITE, width=(2.0 / n), opacity=(2.0 / n), behind=False)
             for n in (*range(1, 10), *range(10, 20, 2), *range(20, 100, 5))
         ))
         area = all_rects[-1]
@@ -716,7 +716,7 @@ class SampleTwoNormals(RepeatedSamplesFromContinuousDistributions):
             Tex(R"\text{Std. Dev.} = 0.0", **kw),
         )
         for label, value in zip(labels, [mean, sigma]):
-            number = label.make_number_changable("0.0")
+            number = label.make_number_changeable("0.0")
             number.set_value(value)
 
         labels.arrange(DOWN, aligned_edge=LEFT)
